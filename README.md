@@ -53,3 +53,7 @@ In the full development environment, you install the Social Program Management J
    - To use SPM Verifications, IBM Cúram Verification Engine Application Module.
 
 5. Configure the REST APIs.
+
+### Figures
+
+![](image/README/Curam_Universal_Access_React_and_Java_application_development_environments.png)
