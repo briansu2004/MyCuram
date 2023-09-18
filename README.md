@@ -6,9 +6,9 @@ My Curam
 
 https://www.ibm.com/support/pages/ibm-c%C3%BAram-social-program-management-pdf-library
 
-v 8.0.0
-v 7.0.11
-v 7.0.9
+- v 8.0.0
+- v 7.0.11
+- v 7.0.9
 
 ## Curam Social Program Management Platform
 
@@ -56,4 +56,4 @@ In the full development environment, you install the Social Program Management J
 
 ### Figures
 
-![](image/README/Curam_Universal_Access_React_and_Java_application_development_environments.png)
+![Curam Universal Access React and Java application development environments](image/README/Curam_Universal_Access_React_and_Java_application_development_environments.png)
