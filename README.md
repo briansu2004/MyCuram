@@ -57,3 +57,7 @@ In the full development environment, you install the Social Program Management J
 ### Figures
 
 ![Curam Universal Access React and Java application development environments](image/README/Curam_Universal_Access_React_and_Java_application_development_environments.png)
+
+## Curam Interview Questions
+
+[Curam Interview Questions](CuramInterviewQuestions.md)
