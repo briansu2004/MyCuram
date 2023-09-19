@@ -1,0 +1,361 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: Persons API
+  description: >
+    By using the Domain APIs that follow, you can retrieve all persons that
+    match a search parameter and retrieve details of a person or a prospect
+    person in Social Program Management. In Social Program Management, a person
+    and a prospect person are the two types of person participants. A person is
+    an individual who is registered with the organization. A prospect person is
+    a person who is not fully registered with the organization. The organization
+    might use a prospect person to screen an individual for potential
+    eligibility for benefits or services.
+host: 'localhost:9080'
+basePath: /Rest
+schemes:
+  - http
+produces:
+  - application/json
+consumes:
+  - application/json
+paths:
+  /v1/api/core/persons:
+    get:
+      summary: Get a person by using one of the person's identifications.
+      description: >
+        The Domain API retrieves all persons that match a search parameter. Use
+        the Domain API to find a person based on one of the person's
+        identifications. Where more than one person is matched, then an
+        exception is returned because identifications are unique to a specific
+        person. 
+      produces:
+        - application/json
+      tags:
+        - Get persons that match a search parameter
+      parameters:
+        - name: identification_value
+          in: query
+          required: false
+          type: string
+          description: >-
+            The value of the person's identification. For example, 123456789.
+            <br> Where an identification_value is included in the request, you
+            must also include an identification_type_code.
+        - name: identification_type_code
+          in: query
+          required: false
+          type: string
+          description: >-
+            The code that is associated with the type of identification. For
+            example, IT26006, which is the code for Passport Number. <br> Where an identification_type_code is included in
+            the request, you must also include an identification_value. 
+      responses:
+        '200':
+          description: The Get request was successful.
+          schema:
+            $ref: '#/definitions/PersonList'
+        '400':
+          description: >-
+            The data request is invalid. Check the error message for further
+            information and resend the request with the corrected data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '403':
+          description: The caller is not authorized to view the requested data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '500':
+          description: >-
+            An internal server error occurred. Contact your administrator for
+            more information. 
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        default:
+          description: >-
+            An unexpected error occurred. Check the error message for further
+            information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+  '/v1/api/core/persons/{person_id}':
+    get:
+      summary: Get persons or prospect persons based on the person_id.
+      description: >
+        By using the <b><i>person_id</i></b>, the Domain API retrieves details
+        of a person or prospect person. The response body includes a
+        <b><i>registered</i></b> indicator to distinguish between a person and a
+        prospect person. In Social Program Management, the
+        <b><i>person_id</i></b> represents the <b><i>concern_role_id</i></b>.
+      produces:
+        - application/json
+      tags:
+        - Get details of a person or prospect person
+      parameters:
+        - name: person_id
+          in: path
+          required: true
+          type: string
+          description: The person ID.
+      responses:
+        '200':
+          description: The Get request was successful.
+          schema:
+            $ref: '#/definitions/Person'
+        '400':
+          description: >-
+            The data request is invalid. Check the error message for further
+            information and resend the request with the corrected data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '403':
+          description: The caller is not authorized to view the requested data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '404':
+          description: The requested resource cannot be found.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '500':
+          description: >-
+            An internal server error occurred. Contact your administrator for
+            more information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        default:
+          description: >-
+            An unexpected error occurred. Check the error message for further
+            information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+definitions:
+  DefaultErrorModel:
+    type: object
+    properties:
+      Error:
+        type: array
+        items:
+          $ref: '#/definitions/Error'
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        description: >-
+          A machine-readable code that identifies the problem. The code does not
+          vary with the Accept-Language setting. 
+      message:
+        type: string
+        description: >-
+          A human-readable message. The message text is translated based on the
+          Accept-Language setting of the request. The contents of the message
+          text can change over time.
+      message_id:
+        type: string
+        description: >-
+          The unique string identifier of the error message where there is an
+          identifier for the underlying cause of the error. 
+      level:
+        type: string
+        description: The level of the error.
+    required:
+      - code
+      - message
+      - level
+  Person:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The unique ID of the person.
+        maxLength: 10
+      identifications:
+        type: array
+        description: The identifications that are associated with the person.
+        items:
+          $ref: '#/definitions/Identification'
+      first_name:
+        type: string
+        description: The person's given name.
+        maxLength: 20
+      last_name:
+        type: string
+        description: The person's surname.
+        maxLength: 30
+      gender:
+        type: object
+        description: The person's gender.
+        $ref: '#/definitions/Coding'
+      birth_date:
+        type: string
+        format: date
+        description: The person's birth date.
+      death_date:
+        type: string
+        format: date
+        description: The person's date of death.
+      emails:
+        type: array
+        description: The person's email addresses.
+        items:
+          $ref: '#/definitions/Email'
+      phones:
+        type: array
+        description: The person's phone numbers.
+        items:
+          $ref: '#/definitions/Phone'
+      addresses:
+        type: array
+        description: The addresses that are associated with the person.
+        items:
+          $ref: '#/definitions/Address'
+      registered:
+        type: boolean
+        description: >-
+          A flag indicates whether the person is fully registered. False
+          indicates that the person is a prospect person. 
+  Address:
+    type: object
+    properties:
+      address_id:
+        type: string
+        description: The unique ID of the address.
+        maxLength: 40
+      display_text:
+        type: string
+        description: The address that is formatted as a comma-delimited string.
+        maxLength: 40
+      type:
+        type: object
+        description: >-
+          The address type for the person. Private and mailing are examples of
+          address type.
+        $ref: '#/definitions/Coding'
+      preferred:
+        type: boolean
+        description: Indicates whether this is the preferred address.
+      location:
+        type: object
+        description: A geocoded location for the address.
+        $ref: '#/definitions/Location'
+  Identification:
+    type: object
+    properties:
+      identification_id:
+        type: string
+        description: The unique ID of the identification.
+        maxLength: 40
+      value:
+        type: string
+        description: The value of the identifier.
+        maxLength: 40
+      type:
+        type: object
+        description: 'The identifier type for the person. For example, SSN.'
+        $ref: '#/definitions/Coding'
+      preferred:
+        type: boolean
+        description: The preferred indicator.
+      period:
+        type: object
+        description: The period to which the identifier applies.
+        $ref: '#/definitions/Period'
+  Email:
+    type: object
+    properties:
+      email_id:
+        type: string
+        description: The unique ID of the email.
+        maxLength: 40
+      value:
+        type: string
+        description: The email address.
+        maxLength: 40
+      type:
+        type: object
+        description: The email type. Business and personal are examples of email type.
+        $ref: '#/definitions/Coding'
+      preferred:
+        type: boolean
+        description: The object indicates whether this is the preferred email address.
+      period:
+        type: object
+        description: The period to which the identifier applies.
+        $ref: '#/definitions/Period'
+  Phone:
+    type: object
+    properties:
+      phone_id:
+        type: string
+        description: The phone unique ID.
+        maxLength: 40
+      country_code:
+        type: string
+        description: The country code.
+        maxLength: 10
+      area_code:
+        type: string
+        description: The area code.
+        maxLength: 10
+      number:
+        type: string
+        description: The phone number.
+        maxLength: 40
+      extension:
+        type: string
+        description: The phone number extension.
+        maxLength: 10
+      type:
+        type: object
+        description: The email type. Email and business are examples of email type.
+        $ref: '#/definitions/Coding'
+      period:
+        type: object
+        description: The period to which the identifier applies.
+        $ref: '#/definitions/Period'
+      preferred:
+        type: boolean
+        description: The preferred indicator.
+  Coding:
+    type: object
+    properties:
+      system:
+        type: string
+        description: The identity of the terminology system.
+        maxLength: 200
+      code:
+        type: string
+        description: The symbol as defined by the system.
+        maxLength: 40
+      display:
+        type: string
+        description: The description of the code entry.
+        maxLength: 200
+  Period:
+    type: object
+    properties:
+      start_date:
+        type: string
+        format: date
+        description: The period start date.
+      end_date:
+        type: string
+        format: date
+        description: The period end date.
+  Location:
+    type: object
+    properties:
+      latitude:
+        type: number
+        description: The latitude coordinates of the address.
+      longitude:
+        type: number
+        description: The longitude coordinates of the address.
+  PersonList:
+    type: object
+    properties:
+      data:
+        type: array
+        description: The details of a person.
+        items:
+          $ref: '#/definitions/Person'

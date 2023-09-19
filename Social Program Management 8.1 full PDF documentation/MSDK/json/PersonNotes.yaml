@@ -1,0 +1,241 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: Person Notes API
+  description: >
+    By using the Domain APIs that follow, you can retrieve the most recent
+    person notes information for clients who are registered in Social Program
+    Management. In Social Program Management, person notes provide extra
+    information about a person. Different users can update person notes. You can
+    prioritize person notes and assign a sensitivity rating so that only users
+    with the appropriate privileges can access the person note. The Domain API
+    always returns the most recent version of the person note. The Domain API
+    includes details of the last user to modify the person note. Users can
+    record person notes in rich text format. The Domain API returns the person
+    note body as plain text <b><i>contents</i></b> and as <b><i>rich text
+    contents_rtf</i></b>.
+host: 'localhost:9080'
+basePath: /Rest
+schemes:
+  - http
+produces:
+  - application/json
+consumes:
+  - application/json
+paths:
+  '/v1/api/core/persons/{person_id}/notes/{note_id}':
+    get:
+      summary: Get details of a person note by using the note_id.
+      description: >
+        The Domain API retrieves details of a person note based on the
+        <b><i>note_id</i></b>. The Domain API always returns the most recent
+        version of the person note.
+      produces:
+        - application/json
+      tags:
+        - Get details of a person note
+      parameters:
+        - name: person_id
+          in: path
+          required: true
+          type: string
+          description: The person ID.
+        - name: note_id
+          in: path
+          required: true
+          type: string
+          description: The person note ID.
+      responses:
+        '200':
+          description: The Get request was successful.
+          schema:
+            $ref: '#/definitions/PersonNote'
+        '400':
+          description: >-
+            The data request is invalid. Check the error message for further
+            information and resend the request with the corrected data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '403':
+          description: The caller is not authorized to view the requested data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '404':
+          description: The requested resource cannot be found.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '500':
+          description: >-
+            An internal server error occurred. Contact your administrator for
+            more information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        default:
+          description: >-
+            An unexpected error occurred. Check the error message for further
+            information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+  '/v1/api/core/persons/{person_id}/notes':
+    get:
+      summary: Get all person notes that are associated with a person.
+      description: >
+        The Domain API retrieves all person notes that are associated with a
+        person. The Domain API always returns the most recent version of the
+        person note. The returned list is arranged by
+        <b><i>modification.modification_datetime</i></b> in descending order.
+      tags:
+        - Get all person notes for a person
+      parameters:
+        - name: person_id
+          in: path
+          required: true
+          description: The person ID.
+          type: string
+        - name: include_cancelled
+          in: query
+          required: false
+          description: >-
+            The boolean denotes whether to include the canceled notes in the
+            returned list. Where no value is set, then only active person notes
+            are returned.
+          type: boolean
+        - name: _fields
+          in: query
+          required: false
+          description: >-
+            The case-sensitive list of top-level properties that the requested
+            resource must return. All other properties are excluded from the
+            returned resource.
+          type: string
+      responses:
+        '200':
+          description: The Get request was successful.
+          schema:
+            $ref: '#/definitions/PersonNoteList'
+        '400':
+          description: >-
+            The data request is invalid. Check the error message for further
+            information and resend the request with the corrected data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '403':
+          description: The caller is not authorized to view the requested data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '500':
+          description: >-
+            An internal server error occurred. Contact your administrator for
+            more information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        default:
+          description: >-
+            An unexpected error occurred. Check the error message for further
+            information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+definitions:
+  DefaultErrorModel:
+    type: object
+    properties:
+      Error:
+        type: array
+        items:
+          $ref: '#/definitions/Error'
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        description: >-
+          A machine-readable code that identifies the problem. The code does not
+          vary with the Accept-Language setting.
+      message:
+        type: string
+        description: >-
+          A human-readable message. The message text is translated based on the
+          Accept-Language setting of the request. The contents of the message
+          text can change over time.
+      message_id:
+        type: string
+        description: >-
+          The unique string identifier of the error message where there is an
+          error message for the underlying cause of the error.
+      level:
+        type: string
+        description: The level of the error.
+    required:
+      - code
+      - message
+      - level
+  Coding:
+    type: object
+    properties:
+      system:
+        type: string
+        description: The identity of the terminology system.
+        maxLength: 200
+      code:
+        type: string
+        description: The symbol as defined by the system.
+        maxLength: 40
+      display:
+        type: string
+        description: The description of the code entry.
+        maxLength: 200
+  PersonNote:
+    type: object
+    properties:
+      id:
+        description: The note ID.
+        type: string
+      title:
+        description: The title of the person note.
+        type: string
+        maxLength: 120
+      contents:
+        description: The contents of the person note.
+        type: string
+        maxLength: 30720
+      contents_rtf:
+        description: The contents of the person note in rich text format.
+        type: string
+        maxLength: 30720
+      priority:
+        description: >-
+          The priority that is associated with the person note. The value of the
+          property must be an item from the NotePriority code table. For more
+          information, see /codetables/NotePriority.
+        type: object
+        $ref: '#/definitions/Coding'
+      active:
+        description: The string indicates whether the person note is active or canceled.
+        type: boolean
+      modification:
+        type: object
+        description: >-
+          The details of the last modification. Where there is no modification,
+          the object consists of the creation details.
+        $ref: '#/definitions/Modification'
+  Modification:
+    type: object
+    properties:
+      modified_by:
+        description: The name of the user that is associated with the most recent update.
+        type: string
+        maxLength: 131
+      modification_datetime:
+        description: The timestamp of the last update.
+        type: string
+        format: datetime
+        maximum: 99991231
+  PersonNoteList:
+    type: object
+    properties:
+      data:
+        type: array
+        description: The details of a person note that is associated with a person.
+        items:
+          $ref: '#/definitions/PersonNote'

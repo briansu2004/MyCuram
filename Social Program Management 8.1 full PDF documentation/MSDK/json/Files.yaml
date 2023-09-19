@@ -1,0 +1,234 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: Files API
+  description: >
+    By using the Domain APIs that follow, you can upload a binary file, retrieve
+    a binary file, and delete a binary file. Files are supplemental information,
+    such as a text documents, that are attached to a person or to a case. The
+    organization can attach scanned documents, such as birth certificates and
+    employment records, to provide extra information about a person or a case.
+    External users can submit files online to the agency for multiple purposes,
+    such as evidence verification. When the file is attached, caseworkers, or
+    other system users with appropriate security privileges, can access the
+    file. In Social Program Management, you can store files in a binary format
+    or as a file location that records a link to an external system, such as a
+    document management system, where the binary file is stored.
+host: 'localhost:9080'
+basePath: /Rest
+schemes:
+  - http
+produces:
+  - application/json
+consumes:
+  - application/json
+paths:
+  /v1/api/docs/files:
+    post:
+      summary: Upload a binary file and the file metadata.
+      description: >-
+        The Domain API uploads a file and the metadata that is associated with
+        the file in Social Program Management. The Domain API sends the binary
+        content of the file in the request body and sends the associated
+        metadata in a custom request header (X-IBM-Curam-File-Metadata) as a
+        JSON string of name-value pairs.
+
+
+         For the application to handle non-ASCII characters, you must URL-encode values that are sent in the custom request header. Before the application processes the non-ASCII characters, the application URL-decodes the characters. The following string is an example of a JSON string for the custom header request header: {“file_name”:“pic.jpg”, "type_code":"DT1", "submitting_application":"Universal Access Portal"}.
+         
+         The file_name attribute is a mandatory string attribute. You must include the file extension with the file name. The type_code attribute is optional. If you supply a type_code attribute, ensure that it is a code from the DocumentType. The submitting_application attribute is optional. For audit purposes, you can use the submitting_application attribute to store the name of the application or system that uploads the file. The Domain API returns the URL for the newly created file resource in the location response header.
+
+         NOTE: By default, the Domain API is unavailable. Before you can use the Domain API, you must use the appropriate property to enable the Domain API. If required, ensure that the associated security hook points are implemented. For more information, see the IBM Knowledge Center.
+      consumes:
+        - '*/*'
+      tags:
+        - Upload binary files
+      parameters:
+        - name: body
+          in: body
+          description: >-
+            There are no attributes. The body contains only the binary contents
+            of the file.
+          required: true
+          schema:
+            type: string
+        - name: X-IBM-Curam-File-Metadata
+          type: string
+          in: header
+          description: >-
+            A custom header that contains a JSON string. The JSON string
+            describes the metadata that is associated with the file. For the
+            application to handle non-ASCII characters, you must URL-encode the
+            values.
+      responses:
+        '201':
+          description: The Post request was successful.
+          headers:
+            Location:
+              type: string
+              description: The location of the new resource.
+        '400':
+          description: >-
+            The data request is invalid. Check the error message for further
+            information and resend the request with the corrected data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '500':
+          description: >-
+            An internal server error occurred. Contact your administrator for
+            more information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        default:
+          description: >-
+            An unexpected error occurred. Check the error message for further
+            information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+  '/v1/api/docs/files/{file_id}':
+    get:
+      summary: Get the content of binary files.
+      description: >-
+        The Domain API retrieves the contents of a specified file in Social
+        Program Management. The body of the response contains the contents of
+        the binary file. The metadata that is associated with the file is
+        returned in a custom response header
+        (X-IBM-Curam-File-Metadata-Response).
+
+
+        The value that is returned in the custom response header is a JSON
+        string. The following string is an example of a value for the custom
+        response header:
+         {"file_name":"TestAttachmentFile3.txt","uploaded_by":"SUPER
+        USER","uploaded_date":"2020-07-08","status":{"system":"/v1/codetables/AttachmentStatus","code":"AS1","display":"Active"},"type":{"system":"/v1/codetables/DocumentType","code":"DT1","display":"Letter"}}.
+
+
+        The file_name attribute contains the file name, including the file
+        extension. The uploaded_by attribute contains the name of the user who
+        originally uploaded the file. The uploaded_date attribute contains the
+        date that the file was originally uploaded. The type attribute contains
+        a further nested JSON object. The object represents details about a code
+        from the DocumentType code table. The status attribute contains a
+        further nested JSON object. The object represents details about a code
+        from the AttachmentStatus code table.
+
+
+        For the application to handle any non-ASCII characters, each value in
+        the JSON string is URL-encoded. Before you use, ensure that the JSON
+        string is URL-decoded.
+      produces:
+        - '*/*'
+      tags:
+        - Get binary files
+      parameters:
+        - name: file_id
+          in: path
+          required: true
+          description: The file ID.
+          type: string
+      responses:
+        '200':
+          description: The Get request was successful.
+          schema:
+            type: string
+            description: >-
+              There are no attributes. The body contains only the binary
+              contents of the file.
+          headers:
+            X-IBM-Curam-File-Metadata-Response:
+              type: string
+              description: >-
+                The metadata that is associated with the file. For the
+                application to handle any non-ASCII characters, each value in
+                the JSON string is URL-encoded. Before you use, ensure that the
+                JSON string is URL-decoded.
+            Content-Disposition:
+              type: string
+              description: >-
+                Browsers use the string to determine whether the file is
+                displayed or downloaded. The string also contains the file name.
+        '400':
+          description: >-
+            The data request is invalid. Check the error message for further
+            information and resend the request with the corrected data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '500':
+          description: >-
+            An internal server error occurred. Contact your administrator for
+            more information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        default:
+          description: >-
+            An unexpected error occurred. Check the error message for further
+            information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+    delete:
+      summary: Delete binary files.
+      description: The Domain API deletes a binary file in Social Program Management.
+      tags:
+        - Delete binary files
+      parameters:
+        - name: file_id
+          in: path
+          required: true
+          description: The file ID.
+          type: string
+      responses:
+        '204':
+          description: The Delete request was successful.
+        '400':
+          description: >-
+            The data request is invalid. Check the error message for further
+            information and resend the request with the corrected data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '500':
+          description: >-
+            An internal server error occurred. Contact your administrator for
+            more information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        default:
+          description: >-
+            An unexpected error occurred. Check the error message for further
+            information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+definitions:
+  DefaultErrorModel:
+    type: object
+    properties:
+      Error:
+        type: array
+        items:
+          $ref: '#/definitions/Error'
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        description: >-
+          A machine-readable code that identifies the problem. The code does not
+          vary with the Accept-Language setting.
+      message:
+        type: string
+        description: >-
+          A human-readable message. The message text is translated based on the
+          Accept-Language setting of the request. The contents of the message
+          text can change over time.
+      message_id:
+        type: string
+        description: >-
+          The unique string identifier of the error message where there is an
+          error message for the underlying cause of the error.
+      level:
+        type: string
+        description: The level of the error.
+    required:
+      - code
+      - message
+      - level

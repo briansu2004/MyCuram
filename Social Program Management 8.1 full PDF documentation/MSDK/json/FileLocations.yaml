@@ -1,0 +1,310 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: File Locations API
+  description: >
+    By using the Domain APIs that follow, you can retrieve a file location to an
+    external system, delete a file location, and upload a file location. Files
+    are supplemental information, such as a text documents, that are attached to
+    a person or to a case. The organization can attach scanned documents, such
+    as birth certificates and employment records, to provide extra information
+    about a person or a case. External users can submit files online to the
+    agency for multiple purposes, such as evidence verification. When the file
+    is attached, caseworkers, or other system users with appropriate security
+    privileges, can access the file. In Social Program Management, you can store
+    files in a binary format or as a file location that records a link to an
+    external system, such as a document management system, where the binary file
+    is stored.
+host: 'localhost:9080'
+basePath: /Rest
+schemes:
+  - http
+produces:
+  - application/json
+consumes:
+  - application/json
+paths:
+  '/v1/api/core/dbs/locations/{location_id}':
+    get:
+      summary: Get a file location to an external system.
+      description: >-
+        The Domain API retrieves a file location to an external system, such as
+        a document management system.
+      produces:
+        - application/json
+      tags:
+        - Get file location
+      parameters:
+        - name: location_id
+          in: path
+          required: true
+          description: The file location ID.
+          type: string
+      responses:
+        '200':
+          description: The Get request was successful.
+          schema:
+            $ref: '#/definitions/FileLocation'
+        '400':
+          description: >-
+            The data request is invalid. Check the error message for further
+            information and resend the request with the corrected data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '500':
+          description: >-
+            An internal server error occurred. Contact your administrator for
+            more information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        default:
+          description: >-
+            An unexpected error occurred. Check the error message for further
+            information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+    delete:
+      summary: Delete a file location.
+      description: The Domain API deletes a file location in Social Program Management.
+      tags:
+        - Delete file location
+      parameters:
+        - name: location_id
+          in: path
+          required: true
+          type: string
+          description: The file location ID.
+      responses:
+        '204':
+          description: The Delete request was successful.
+        '400':
+          description: >-
+            The data request is invalid. Check the error message for further
+            information and resend the request with the corrected data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '500':
+          description: >-
+            An internal server error occurred. Contact your administrator for
+            more information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        default:
+          description: >-
+            An unexpected error occurred. Check the error message for further
+            information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+  /v1/api/core/dbs/locations:
+    post:
+      summary: >-
+        Upload a file location so that the reference is available to
+        caseworkers.
+      description: >-
+        The Domain API uploads a file location, that is, a reference to a file
+        on an external system, such as a document management system. Social
+        Program Management records the references. The references are then
+        available to the caseworkers within the application.
+      tags:
+        - Upload file location
+      parameters:
+        - name: body
+          in: body
+          description: The details of the location of a file.
+          required: true
+          schema:
+            $ref: '#/definitions/NewDOMFileLocation'
+      responses:
+        '200':
+          description: The Post request was successful.
+          schema:
+            $ref: '#/definitions/FileLocation'
+        '400':
+          description: >-
+            The data request is invalid. Check the error message for further
+            information and resend the request with the corrected data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '500':
+          description: >-
+            An internal server error occurred. Contact your administrator for
+            more information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        default:
+          description: >-
+            An unexpected error occurred. Check the error message for further
+            information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+definitions:
+  DefaultErrorModel:
+    type: object
+    properties:
+      Error:
+        type: array
+        items:
+          $ref: '#/definitions/Error'
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        description: >-
+          A machine-readable code that identifies the problem. The code does not
+          vary with the Accept-Language setting.
+      message:
+        type: string
+        description: >-
+          A human-readable message. The message text is translated based on the
+          Accept-Language setting of the request. The contents of the message
+          text can change over time.
+      message_id:
+        type: string
+        description: >-
+          The unique string identifier of the error message where there is an
+          error message for the underlying cause of the error.
+      level:
+        type: string
+        description: The level of the error.
+    required:
+      - code
+      - message
+      - level
+  Coding:
+    type: object
+    properties:
+      system:
+        type: string
+        description: The identity of the terminology system.
+        maxLength: 200
+      code:
+        type: string
+        description: The symbol as defined by the system.
+        maxLength: 40
+      display:
+        type: string
+        description: The description of the code entry.
+        maxLength: 200
+  FileLocation:
+    type: object
+    properties:
+      id:
+        description: The file location ID. The file location ID is read only.
+        type: string
+      status:
+        description: >-
+          The status of the file location record. Active and removed are
+          examples of the status of the file location record. The status of the
+          file location is read only. The value of the property must be an item
+          from the AttachmentStatus code table. For more information, see
+          /codetables/AttachmentStatus. 
+        type: object
+        $ref: '#/definitions/Coding'
+      reference:
+        description: The reference number or description of the file.
+        type: string
+        maxLength: 32
+      location:
+        description: The location for a file on an external system.
+        type: string
+        maxLength: 40
+      submitting_application:
+        description: >-
+          The name of the application or system that originally created the file
+          location record.
+        type: string
+        maxLength: 100
+      type:
+        description: >-
+          The type of document of the referenced file. Letter and audio are
+          examples of the type of document of the referenced file. The value of
+          the property must be an item from the DocumentType code table. For
+          more information, see /codetables/DocumentType. 
+        type: object
+        $ref: '#/definitions/Coding'
+      modification:
+        type: object
+        description: >-
+          The details of the last modification. Where there is no modification,
+          the object consists of the creation details.
+        $ref: '#/definitions/ModificationDetails'
+  NewDOMFileLocation:
+    type: object
+    properties:
+      id:
+        description: The file location ID. The file location ID is read only.
+        type: string
+      status:
+        description: >-
+          The status of the file location record. Active and removed are
+          examples of the status of the file location record. The status of the
+          file location is read only. The value of the property must be an item
+          from the AttachmentStatus code table. For more information, see
+          /codetables/AttachmentStatus.
+        type: object
+        $ref: '#/definitions/Coding'
+      reference:
+        description: The reference number or the description of the file.
+        type: string
+        maxLength: 32
+      location:
+        description: The location for a file on an external system.
+        type: string
+        maxLength: 40
+      submitting_application:
+        description: >-
+          The name of the application or system that originally created the file
+          location record.
+        type: string
+        maxLength: 100
+      type:
+        description: >-
+          The type of document of the referenced file. Letter and audio are
+          examples of the type of document of the referenced file. The value of
+          the property must be an item from the DocumentType code table. For
+          more information, see /codetables/DocumentType.
+        type: object
+        $ref: '#/definitions/Coding'
+      modification:
+        type: object
+        description: >-
+          The details of the last modification. Where there is no modification,
+          the object consists of the creation details.
+        $ref: '#/definitions/NewModificationDetails'
+    required:
+      - reference
+      - location
+  ModificationDetails:
+    type: object
+    properties:
+      modified_by:
+        description: >-
+          The name of the user that is associated with the most recent update.
+          The name of the user that is associated with the most recent update is
+          read only.
+        type: string
+        maxLength: 131
+      modification_date:
+        description: >-
+          The timestamp of the last update. The timestamp of the last update is
+          read only.
+        type: string
+        format: date
+  NewModificationDetails:
+    type: object
+    properties:
+      modified_by:
+        description: >-
+          The name of the user that is associated with the most recent update.
+          The name of the user that is associated with the most recent update is
+          read only.
+        type: string
+        maxLength: 131
+      modification_date:
+        description: >-
+          The timestamp of the last update. The timestamp of the last update is
+          read only.
+        type: string
+        format: date

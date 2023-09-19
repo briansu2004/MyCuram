@@ -1,0 +1,282 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: Person File Links API
+  description: >
+    By using the Domain APIs that follow, you can retrieve person file links,
+    create person file links, and delete links between a file and a person in
+    Social Program Management. In Social Program Management, file links
+    associate a file with another entity. For example, file links can associate
+    a file with a person or a case. When a file is uploaded to the system, the
+    file is not automatically available to the caseworker. Instead, you must
+    link the file to the entity so that the file is listed in the correct
+    context in the application.
+host: 'localhost:9080'
+basePath: /Rest
+schemes:
+  - http
+produces:
+  - application/json
+consumes:
+  - application/json
+paths:
+  '/v1/api/core/persons/{person_id}/file_links':
+    get:
+      summary: Get file links for a person.
+      description: >-
+        The Domain API retrieves file links for a person in Social Program
+        Management. The returned list is arranged by
+        <b><i>modification.modification_date</i></b> in descending order.
+      tags:
+        - Get a person file link
+      parameters:
+        - name: person_id
+          in: path
+          required: true
+          description: The person ID.
+          type: string
+        - name: include_cancelled
+          in: query
+          required: false
+          description: >-
+            The boolean denotes whether to include canceled records in the
+            returned list. Where no value is set, then only active records are
+            returned.
+          type: boolean
+      responses:
+        '200':
+          description: The Get request was successful.
+          schema:
+            $ref: '#/definitions/PersonFileLinkList'
+        '400':
+          description: >-
+            The data request is invalid. Check the error message for further
+            information and resend the request with the corrected data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '403':
+          description: The caller is not authorized to view the requested data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '500':
+          description: >-
+            An internal server error occurred. Contact your administrator for
+            more information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        default:
+          description: >-
+            An unexpected error occurred. Check the error message for further
+            information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+    post:
+      summary: Create a person file link to a specified person.
+      description: >-
+        The person file links an existing file in Social Program Management to a
+        specified person in Social Program Management.
+
+
+        Note: The file can link to only one entity. If the file is linked
+        elsewhere, the Domain API produces an error. In later versions of the
+        Domain API, it is intended that the file can link to more than one
+        entity.
+      tags:
+        - Create a person file link
+      parameters:
+        - name: person_id
+          in: path
+          required: true
+          type: string
+          description: The person ID.
+        - name: body
+          in: body
+          description: >-
+            The object provides details of the person and details of the file to
+            attach.
+          required: true
+          schema:
+            $ref: '#/definitions/NewPersonFileLink'
+      responses:
+        '200':
+          description: The Post request was successful.
+          schema:
+            $ref: '#/definitions/PersonFileLink'
+        '400':
+          description: >-
+            The data request is invalid. Check the error message for further
+            information and resend the request with the corrected data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '500':
+          description: >-
+            An internal server error occurred. Contact your administrator for
+            more information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        default:
+          description: >-
+            An unexpected error occurred. Check the error message for further
+            information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+  '/v1/api/core/persons/{person_id}/file_links/{link_id}':
+    delete:
+      summary: Delete a link between a file and a person.
+      description: >-
+        The Domain API deletes the link between a file and a person in Social
+        Program Management. Deleting the link does not cancel the file. To
+        cancel the corresponding file, use a second File API call.
+      tags:
+        - Delete a person file link
+      parameters:
+        - name: person_id
+          in: path
+          required: true
+          type: string
+          description: The person ID.
+        - name: link_id
+          in: path
+          required: true
+          type: string
+          description: The file link ID.
+      responses:
+        '204':
+          description: The Delete request was successful.
+        '400':
+          description: >-
+            The data request is invalid. Check the error message for further
+            information and resend the request with the corrected data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '500':
+          description: >-
+            An internal server error occurred. Contact your administrator for
+            more information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        default:
+          description: >-
+            An unexpected error occurred. Check the error message for further
+            information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+definitions:
+  DefaultErrorModel:
+    type: object
+    properties:
+      Error:
+        type: array
+        items:
+          $ref: '#/definitions/Error'
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        description: >-
+          A machine-readable code that identifies the problem. The code does not
+          vary with the Accept-Language setting.
+      message:
+        type: string
+        description: >-
+          A human-readable message. The message text is translated based on the
+          Accept-Language setting of the request. The contents of the message
+          text can change over time.
+      message_id:
+        type: string
+        description: >-
+          The unique string identifier of the error message where there is an
+          error message for the underlying cause of the error.
+      level:
+        type: string
+        description: The level of the error.
+    required:
+      - code
+      - message
+      - level
+  NewPersonFileLink:
+    type: object
+    properties:
+      id:
+        description: The file link ID. The file link ID is read only.
+        type: string
+      person_id:
+        description: The person ID.
+        type: string
+      file_id:
+        description: The file ID.
+        type: string
+      description:
+        description: The description of the file link.
+        type: string
+        maxLength: 300
+      active:
+        description: >-
+          The boolean indicates whether the file link is active or canceled. The
+          string is read only.
+        type: boolean
+      modification:
+        type: object
+        description: >-
+          The details of the last modification date. Where there is no
+          modification, the object consists of the creation details.
+        $ref: '#/definitions/NewModificationDate'
+    required:
+      - person_id
+      - file_id
+      - description
+  PersonFileLink:
+    type: object
+    properties:
+      id:
+        description: The file link ID. The file link ID is read only.
+        type: string
+      person_id:
+        description: The person ID.
+        type: string
+      file_id:
+        description: The file ID.
+        type: string
+      description:
+        description: The description of the file link.
+        type: string
+        maxLength: 300
+      active:
+        description: >-
+          The boolean indicates whether the file link is active or canceled. The
+          string is read only.
+        type: boolean
+      modification:
+        type: object
+        description: >-
+          The details of the last modification date. Where there is no
+          modification, the object consists of the creation details.
+        $ref: '#/definitions/ModificationDate'
+  PersonFileLinkList:
+    type: object
+    properties:
+      data:
+        type: array
+        description: The details of a file that is linked to a person.
+        items:
+          $ref: '#/definitions/PersonFileLink'
+  ModificationDate:
+    type: object
+    properties:
+      modification_date:
+        description: >-
+          The date of the last modification. The date of the last modification
+          is read only.
+        type: string
+        format: date
+  NewModificationDate:
+    type: object
+    properties:
+      modification_date:
+        description: >-
+          The date of the last modification. The date of the last modification
+          is read only.
+        type: string
+        format: date

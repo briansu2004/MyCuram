@@ -1,0 +1,243 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: Case Notes API
+  description: >
+    By using the Domain APIs that follow, you can retrieve the most recent case
+    notes information for clients who are registered in Social Program
+    Management. In Social Program Management, case notes provide extra
+    information about a case. Different users can update case notes. You can
+    prioritize case notes and assign a sensitivity rating so that only users
+    with the appropriate privileges can access the case note. The Domain API
+    always returns the most recent version of the case note. The Domain API
+    includes details of the most recent user to modify the note. Users can
+    record case notes in rich text format. The Domain API returns the case note
+    body as plain text <b><i>contents</i></b> and as <b><i>rich text
+    contents_rtf</i></b>.
+host: 'localhost:9080'
+basePath: /Rest
+schemes:
+  - http
+produces:
+  - application/json
+consumes:
+  - application/json
+paths:
+  '/v1/api/core/cases/{case_id}/notes/{note_id}':
+    get:
+      summary: Get details of a case note based on the note_id of the case.
+      description: >
+        The Domain API retrieves details of a case note based on the
+        <b><i>note_id</i></b> of the case. The Domain API always returns the
+        most recent version of the case note. 
+      produces:
+        - application/json
+      tags:
+        - Get details of a case note
+      parameters:
+        - name: case_id
+          in: path
+          required: true
+          type: string
+          description: The case ID.
+        - name: note_id
+          in: path
+          required: true
+          type: string
+          description: The case note ID.
+        - name: include_cancelled
+          in: query
+          required: false
+          type: string
+          description: >-
+            The string denotes whether to include the canceled case notes in the
+            returned list. Where no value is set, then only active case notes
+            are returned.
+      responses:
+        '200':
+          description: The Get request was successful.
+          schema:
+            $ref: '#/definitions/Note'
+        '400':
+          description: >-
+            The data request is invalid. Check the error message for further
+            information and resend the request with the corrected data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '403':
+          description: The caller is not authorized to view the requested data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '404':
+          description: The requested resource cannot be found.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '500':
+          description: >-
+            An internal server error occurred. Contact your administrator for
+            more information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        default:
+          description: >-
+            An unexpected error occurred. Check the error message for further
+            information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+  '/v1/api/core/cases/{case_id}/notes':
+    get:
+      summary: Get all case notes that are associated with a case.
+      description: >
+        The Domain API retrieves all case notes that are associated with a case.
+        The Domain API always returns the most recent version of the case note.
+        <br><br> The returned list is arranged by
+        <b><i>modification.modification_datetime</i></b> in descending order.
+      tags:
+        - Get all case notes for a case
+      parameters:
+        - name: case_id
+          in: path
+          required: true
+          description: The case ID.
+          type: string
+        - name: include_cancelled
+          in: query
+          required: false
+          description: >-
+            The boolean denotes whether to include the canceled case notes in
+            the returned list. Where no value is set, then only active case
+            notes are returned.
+          type: boolean
+      responses:
+        '200':
+          description: The Get request was successful.
+          schema:
+            $ref: '#/definitions/NoteList'
+        '400':
+          description: >-
+            The data request is invalid. Check the error message for further
+            information and resend the request with the corrected data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '403':
+          description: The caller is not authorized to view the requested data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '404':
+          description: The requested resource cannot be found.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '500':
+          description: >-
+            An internal server error occurred. Contact your administrator for
+            more information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        default:
+          description: >-
+            An unexpected error occurred. Check the error message for further
+            information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+definitions:
+  DefaultErrorModel:
+    type: object
+    properties:
+      Error:
+        type: array
+        items:
+          $ref: '#/definitions/Error'
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        description: >-
+          A machine-readable code that identifies the problem. The code does not
+          vary with the Accept-Language setting.
+      message:
+        type: string
+        description: >-
+          A human-readable message. The message text is translated based on the
+          Accept-Language setting of the request. The contents of the message
+          text can change over time.
+      message_id:
+        type: string
+        description: >-
+          The unique string identifier of the error message where there is an
+          error message for the underlying cause of the error.
+      level:
+        type: string
+        description: The level of the error.
+    required:
+      - code
+      - message
+      - level
+  Coding:
+    type: object
+    properties:
+      system:
+        type: string
+        description: The identity of the terminology system.
+        maxLength: 200
+      code:
+        type: string
+        description: The symbol as defined by the system.
+        maxLength: 40
+      display:
+        type: string
+        description: The description of the code entry.
+        maxLength: 200
+  Note:
+    type: object
+    properties:
+      id:
+        description: The case note ID.
+        type: string
+      title:
+        description: The title of the case note.
+        type: string
+        maxLength: 120
+      contents:
+        description: The contents of the case note.
+        type: string
+        maxLength: 131072
+      contents_rtf:
+        description: The contents of the case note in rich text format.
+        type: string
+        maxLength: 131072
+      priority:
+        description: >-
+          The priority that is associated with the case note. The value of the
+          property must be an item from the NotePriority code table. For more
+          information, see /codetables/NotePriority.
+        type: object
+        $ref: '#/definitions/Coding'
+      active:
+        description: The boolean indicates whether the case note is active or canceled.
+        type: boolean
+      modification:
+        type: object
+        description: >-
+          The details of the most recent modification. Where there is no
+          modification, the object consists of the creation details.
+        $ref: '#/definitions/Modification'
+  Modification:
+    type: object
+    properties:
+      name:
+        type: string
+        description: The name of the user that is associated with the most recent update.
+      modified_datetime:
+        type: string
+        format: datetime
+        description: The timestamp of the most recent update. The format is ISO 8601.
+  NoteList:
+    type: object
+    properties:
+      data:
+        type: array
+        description: The details of a case note.
+        items:
+          $ref: '#/definitions/Note'

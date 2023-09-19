@@ -1,0 +1,283 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: Case File Links API
+  description: >
+    By using the Domain APIs that follow, you can retrieve case file links,
+    create case file links, and delete case file links in Social Program
+    Management. In Social Program Management, file links associate a file with
+    another entity. For example, file links can associate a file with a person
+    or a case. When a file is uploaded to the system, the file is not
+    automatically available to the caseworker. Instead, you must link the file
+    to the entity so that the file is listed in the correct context in the
+    application.
+host: 'localhost:9080'
+basePath: /Rest
+schemes:
+  - http
+produces:
+  - application/json
+consumes:
+  - application/json
+paths:
+  '/v1/api/core/cases/{case_id}/file_links':
+    get:
+      summary: Get all the file links that are associated with a case.
+      description: >
+        The list returned by the Domain API is arranged by
+        <b><i>modification.modification_date</i></b> in descending order. <br>
+      tags:
+        - Get a case file link
+      parameters:
+        - name: case_id
+          in: path
+          required: true
+          description: The case ID.
+          type: string
+        - name: include_cancelled
+          in: query
+          required: false
+          description: >-
+            The boolean denotes whether to include the canceled case file links
+            in the returned list. Where no value is set, then only active case
+            file links are returned.
+          type: boolean
+        - name: _fields
+          in: query
+          required: false
+          description: >-
+            The case-sensitive list of top-level properties that the requested
+            resource must return. All other properties are excluded from the
+            returned resource.
+          type: string
+      responses:
+        '200':
+          description: The Get request was successful.
+          schema:
+            $ref: '#/definitions/CaseFileLinkList'
+        '400':
+          description: >-
+            The data request is invalid. Check the error message for further
+            information and resend the request with the corrected data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '500':
+          description: >-
+            An internal server error occurred. Contact your administrator for
+            more information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        default:
+          description: >-
+            An unexpected error occurred. Check the error message for further
+            information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+    post:
+      summary: Create a case file link to a specified file.
+      description: >-
+        The Domain API creates a case file link from an existing file to a
+        specified case in Social Program Management. Note: The file can link to
+        only one entity. Where the file is linked elsewhere, the Domain API
+        produces an error. In later versions of the Domain API, it is intended
+        that the file can link to more than one entity.
+      tags:
+        - Create a case file link
+      parameters:
+        - name: case_id
+          in: path
+          required: true
+          type: string
+          description: The case ID.
+        - name: body
+          in: body
+          description: The details of the case and the details of the file to attach.
+          required: true
+          schema:
+            $ref: '#/definitions/NewCaseFileLink'
+      responses:
+        '200':
+          description: The Post request was successful.
+          schema:
+            $ref: '#/definitions/CaseFileLink'
+        '400':
+          description: >-
+            The data request is invalid. Check the error message for further
+            information and resend the request with the corrected data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '500':
+          description: >-
+            An internal server error occurred. Contact your administrator for
+            more information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        default:
+          description: >-
+            An unexpected error occurred. Check the error message for further
+            information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+  '/v1/api/core/cases/{case_id}/file_links/{link_id}':
+    delete:
+      summary: Delete a case file link between a case and a file.
+      description: >-
+        Deleting the link between a case and a file does not cancel the file. To
+        cancel the corresponding file, use a second File API call.
+      tags:
+        - Delete a case file link
+      parameters:
+        - name: case_id
+          in: path
+          required: true
+          type: string
+          description: >-
+            The ID of the case to which the link between a case and a file
+            relates.
+        - name: link_id
+          in: path
+          required: true
+          type: string
+          description: The ID of the link to cancel.
+      responses:
+        '204':
+          description: The Delete request was successful.
+        '400':
+          description: >-
+            The data request is invalid. Check the error message for further
+            information and resend the request with the corrected data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '500':
+          description: >-
+            An internal server error occurred. Contact your administrator for
+            more information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        default:
+          description: >-
+            An unexpected error occurred. Check the error message for further
+            information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+definitions:
+  DefaultErrorModel:
+    type: object
+    properties:
+      Error:
+        type: array
+        items:
+          $ref: '#/definitions/Error'
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        description: >-
+          A machine-readable code that identifies the problem. The code does not
+          vary with the Accept-Language setting. 
+      message:
+        type: string
+        description: >-
+          A human-readable message. The message text is translated based on the
+          Accept-Language setting of the request. The contents of the message
+          text can change over time.
+      message_id:
+        type: string
+        description: >-
+          The unique string identifier of the error message where there is an
+          error message for the underlying cause of the error. 
+      level:
+        type: string
+        description: The level of the error.
+    required:
+      - code
+      - message
+      - level
+  CaseFileLink:
+    type: object
+    properties:
+      id:
+        description: The file link ID. The file link ID is read only.
+        type: string
+      case_id:
+        description: The case ID.
+        type: string
+      file_id:
+        description: The file ID.
+        type: string
+      'description ':
+        description: The description of the file link.
+        type: string
+        maxLength: 300
+      case_participant_role_id:
+        description: The case participant role ID.
+        type: string
+      active:
+        description: >-
+          The boolean indicates whether the file link is active or canceled. The
+          field is read only.
+        type: boolean
+      modification:
+        type: object
+        description: >-
+          The details of the last modification date. Where there is no
+          modification, the object consists of the creation details.
+        $ref: '#/definitions/ModificationDate'
+  NewCaseFileLink:
+    type: object
+    properties:
+      id:
+        description: The file link ID. The file link ID is read only.
+        type: string
+      case_id:
+        description: The case ID.
+        type: string
+      file_id:
+        description: The file ID.
+        type: string
+      'description ':
+        description: The description of the file link.
+        type: string
+        maxLength: 300
+      case_participant_role_id:
+        description: The case participant role ID.
+        type: string
+      active:
+        description: >-
+          The boolean indicates whether the file link is active or canceled. The
+          field is read only.
+        type: boolean
+      modification:
+        type: object
+        description: >-
+          The details of the last modification date. Where there is no
+          modification, the object consists of the creation details.
+        $ref: '#/definitions/NewModificationDate'
+  CaseFileLinkList:
+    type: object
+    properties:
+      data:
+        type: array
+        description: The details of a file that is linked to a case.
+        items:
+          $ref: '#/definitions/CaseFileLink'
+  NewModificationDate:
+    type: object
+    properties:
+      modification_date:
+        description: >-
+          The date of the last modification. The date of the last modification
+          is read only.
+        type: string
+        format: date
+  ModificationDate:
+    type: object
+    properties:
+      modification_date:
+        description: >-
+          The date of the last modification. The date of the last modification
+          is read only.
+        type: string
+        format: date

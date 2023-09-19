@@ -1,0 +1,165 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: Cautions API
+  description: >
+    By using the Domain API that follows, you can retrieve all cautions that are
+    associated with a person in Social Program Management. In Social Program
+    Management, special cautions are recorded for case members to highlight any
+    items that require special attention. The information is recorded to ensure
+    the safety of the person and of the agency.
+host: 'localhost:9080'
+basePath: /Rest
+schemes:
+  - http
+produces:
+  - application/json
+consumes:
+  - application/json
+paths:
+  '/v1/api/core/persons/{person_id}/cautions':
+    get:
+      summary: Get all cautions that are associated with a person.
+      description: >
+        A caution is a recorded warning to highlight the details of a person
+        that requires special attention. The Domain API retrieves all cautions
+        that are associated with a person. The Domain API returns a list that is
+        arranged by the <b><i>period.start_date</i></b> in descending
+        order.<br><br>
+      produces:
+        - application/json
+      tags:
+        - Get cautions for a person
+      parameters:
+        - name: person_id
+          in: path
+          required: true
+          type: string
+          description: The person ID.
+        - name: include_cancelled
+          in: query
+          required: false
+          type: string
+          description: >-
+            To display canceled cautions, set the flag to true. If the parameter
+            is not passed, then only active cautions are included.
+      responses:
+        '200':
+          description: The Get request was successful.
+          schema:
+            $ref: '#/definitions/CautionList'
+        '400':
+          description: >-
+            The data request is invalid. Check the error message for further
+            information and resend the request with the corrected data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '500':
+          description: >-
+            An internal server error occurred. Contact your administrator for
+            more information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        default:
+          description: >-
+            An unexpected error occurred. Check the error message for further
+            information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+definitions:
+  DefaultErrorModel:
+    type: object
+    properties:
+      Error:
+        type: array
+        items:
+          $ref: '#/definitions/Error'
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        description: >-
+          A machine-readable code that identifies the problem. The code does not
+          vary with the Accept-Language setting. 
+      message:
+        type: string
+        description: >-
+          A human-readable message. The message text is translated based on the
+          Accept-Language setting of the request. The contents of the message
+          text can change over time. 
+      message_id:
+        type: string
+        description: >-
+          The unique string identifier of the error message where there is an
+          identifier for the underlying cause of the error.
+      level:
+        type: string
+        description: The level of the error.
+    required:
+      - code
+      - message
+      - level
+  Coding:
+    type: object
+    properties:
+      system:
+        type: string
+        description: The identity of the terminology system.
+        maxLength: 200
+      code:
+        type: string
+        description: The symbol as defined by the system.
+        maxLength: 40
+      display:
+        type: string
+        description: The description of the code entry.
+        maxLength: 200
+  CautionList:
+    type: object
+    properties:
+      data:
+        type: array
+        description: Details of a caution or alert associated with a person
+        items:
+          $ref: '#/definitions/Caution'      
+  Caution:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The unique identifier of the caution.
+      type:
+        type: object
+        description: >-
+          The type of caution. Violent history and substance abuse are examples
+          of caution types.
+        $ref: '#/definitions/Coding'
+      description:
+        type: string
+        description: A description of the reason for the caution.
+      category:
+        type: object
+        description: >-
+          A category that is associated with the caution. Safety and health are
+          examples of categories.
+        $ref: '#/definitions/Coding'
+      period:
+        type: object
+        description: The period to which the caution applies.
+        $ref: '#/definitions/Period'
+      active:
+        type: boolean
+        description: An indication of whether the caution record is active or canceled.
+  Period:
+    type: object
+    properties:
+      start_date:
+        description: The period start date.
+        type: string
+        format: date
+      end_date:
+        description: The period end date.
+        type: string
+        format: date

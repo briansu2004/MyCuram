@@ -1,0 +1,345 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: Verifications API
+  description: >
+    By using the Domain API that follows, you can view verification details, or retrieve verifications for a case or a person in Social Program Management. Administrators configure verifications and associate them with evidence types. When caseworkers enter evidence, the Verification Engine generates the appropriate verifications.
+    
+host: 'localhost:9080'
+basePath: /Rest
+schemes:
+  - http
+produces:
+  - application/json
+consumes:
+  - application/json
+paths:
+  '/v1/api/core/verifications/{verification_id}':
+    get:
+      summary: Get details for a specified verification.
+      description: The Domain API returns details for the verification that is specified by the <b><i>verification_id</i></b>.
+      tags:
+        - Get details of a verification
+      parameters:
+        - name: verification_id
+          in: path
+          required: true
+          description: The verification ID.
+          type: string
+      responses:
+        '200':
+          description: The get request was successful.
+          schema:
+            $ref: '#/definitions/Verification'
+        '400':
+          description: The data request is invalid. Check the error message for more information and resend the request with the corrected data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '500':
+          description: An internal server error occurred. Contact your administrator for more information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        default:
+          description: An unexpected error occurred. Check the error message for more information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+            
+  '/v1/api/core/verifications':
+    get:
+      summary: Get a list of all verifications for a specified case or person.
+      description: >
+        The Domain API returns all verifications that match the <b><i>case_id</i></b> or <b><i>person_id</i></b> search parameters. A list of verifications that are linked to either a case or a person is returned. An empty list is returned if no verifications are found.
+      tags:
+        - Get all verifiations for a case or person
+      parameters:
+        - name: case_id
+          in: query
+          required: false
+          description: The case ID.
+          type: string
+        - name: person_id
+          in: query
+          required: false
+          description: The person ID.
+          type: string
+      responses:
+        '200':
+          description: The get request was successful.
+          schema:
+            $ref: '#/definitions/VerificationList'
+        '400':
+          description: The data request is invalid. Check the error message for more information and resend the request with the corrected data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '500':
+          description: An internal server error occurred. Contact your administrator for more information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        default:
+          description: An unexpected error occurred. Check the error message for more information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+            
+definitions:
+  DefaultErrorModel:
+    type: object
+    properties:
+      Error:
+        type: array
+        items:
+          $ref: '#/definitions/Error'
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        description: >-
+          A machine-readable code that identifies the problem. The code does not
+          vary with the Accept-Language setting.
+      message:
+        type: string
+        description: >-
+          A human-readable message. The message text is translated based on the
+          Accept-Language setting of the request. The contents of the message
+          text can change over time.
+      message_id:
+        type: string
+        description: >-
+          The unique string identifier of the error message where there is an
+          error message for the underlying cause of the error. 
+      level:
+        type: string
+        description: The level of the error.
+    required:
+      - code
+      - message
+      - level
+  Coding:
+    type: object
+    properties:
+      system:
+        type: string
+        description: The identity of the terminology system.
+        maxLength: 200
+      code:
+        type: string
+        description: The symbol as defined by the system.
+        maxLength: 40
+      display:
+        type: string
+        description: The description of the code entry.
+        maxLength: 200
+  Period:
+    type: object
+    properties:
+      start_date:
+        type: string
+        format: date
+        description: The period start date.
+      end_date:
+        type: string
+        format: date
+        description: The period end date.
+  Verification:
+    type: object
+    properties:
+      id:
+        description: The verification ID.
+        type: string
+      status:
+        description: 'The status of the verification, for example Verified or Not Verified. The value of this property must be an item from the VerificationStatus code table.
+        type: object
+        $ref: '#/definitions/Coding'
+      due_date:
+        description: The due date for the verification.
+        type: string
+        format: date
+      mandatory:
+        description: Indicates whether it is mandatory to provide proof for this verification.
+        type: boolean
+      client_provided:
+        description: Indicates whether the client rather than another party must provide the proofs for the verification.
+        type: boolean
+      category:
+        description: The name of the verification category. The value of this property must be an item from the VerificationCatName code table.
+        type: object
+        $ref: '#/definitions/Coding'
+      accepted_proofs:
+        type: array
+        description: Details of all proof that was accepted for the verification.
+        items:
+          $ref: '#/definitions/AcceptedProof'
+      evidence_attribute:
+        type: object
+        description: Details of the evidence that the verification requirement is linked to.
+        $ref: '#/definitions/EvidenceAttribute'
+      provided_files:
+        type: array
+        description: Details of files that were submitted for the verification. These files might not have been accepted as proof if they were not acceptable to the agency.
+        items:
+          $ref: '#/definitions/ProvidedFile'
+      related_case:
+        type: object
+        $ref: '#/definitions/RelatedCase'
+      related_person:
+        type: object
+        $ref: '#/definitions/RelatedPerson'
+      required_proofs:
+        type: array
+        description: Details of the types of proof that are required to meet the requirements of this verification.
+        items:
+          $ref: '#/definitions/RequiredProof'
+      waiver:
+        type: object
+        description: Details of a Verification waiver.
+        $ref: '#/definitions/Waiver'
+  EvidenceAttribute:
+    type: object
+    properties:
+      name:
+        description: The name of the item for which the verification is required. The value of this property must be an item from the VerifiableItemName code table. See /codetables/VerifiableItemName.
+        type: object
+        $ref: '#/definitions/Coding'
+      text:
+        description: The name that is associated with the evidence attribute.
+        type: string
+        maxLength: 50
+      related_evidence:
+        type: object
+        $ref: '#/definitions/RelatedEvidence'
+  RelatedEvidence:
+    type: object
+    properties:
+      evidence_id:
+        description: The identification of the evidence.
+        type: string
+      type:
+        description: The type of the evidence. The value of this property must be an item from the EvidenceType code table. See /codetables/EvidenceType.
+        type: object
+        $ref: '#/definitions/Coding'
+      status:
+        description: The status of the evidence. The value of this property must be an item from the EvidenceDescriptorStatus code table.
+        type: object
+        $ref: '#/definitions/Coding'
+      summary : 
+        maxLength: 200
+        type: string
+        description: The text summary of the evidence.
+      participant:
+        $ref: '#/definitions/RelatedPerson'   
+  RequiredProof:
+    type: object
+    properties:
+      name:
+        description: The name of the proof. The value of this property must be an item from the VerificationItemName code table. See /codetables/VerificationItemName.
+        type: object
+        $ref: '#/definitions/Coding'
+      type:
+        description: The type of the proof. The value of this property must be an item from the VerificationItemType code table. See /codetables/VerificationItemType.
+        type: object
+        $ref: '#/definitions/Coding'
+      mandatory:
+        description: Indicates whether it is mandatory to provide this proof.
+        type: boolean
+      usage:
+        description: A code to specify whether the proof can be used for multiple verifications. The value of this property must be an item from the VerificationItemUsageType code table.
+        type: object
+        $ref: '#/definitions/Coding'
+      valid_period:
+        type: object
+        description: The applicable date range.
+        $ref: '#/definitions/Period'
+      group:
+        type: object
+        $ref: '#/definitions/VerificationGroup'
+  VerificationGroup:
+    type: object
+    properties:
+      id:
+        description: The verification item group ID.
+        type: string
+  ProvidedFile:
+    type: object
+    properties:
+      link_id:
+        description: The ID of a link between a file and a verification.
+        type: string
+      file_id:
+        description: The file ID.
+        type: string
+      file_name:
+        description: The name of the file.
+        type: string
+        maxLength: 256
+      received_date:
+        description: The date that the system received the file.
+        type: string
+        format: date
+      added_by:
+        description: The name of the person who uploaded the file.
+        type: string
+        maxLength: 64
+      name:
+        description: 'The name of the type file or document eg Passport, Birth Certificate. The value of this property must be an item from the VerificationItemName code table. See /codetables/VerificationItemName'
+        type: object
+        $ref: '#/definitions/Coding'
+  RelatedPerson:
+    type: object
+    properties:
+      person_id:
+        description: The person ID.
+        type: string
+      name:
+        description: The full name of the person.
+        type: string
+        maxLength: 131
+  AcceptedProof:
+    type: object
+    properties:
+      added_date:
+        description: The date that the proof was added.
+        type: string
+        format: date
+      added_by:
+        description: The name of the person who added or updated the proof.
+        type: string
+        maxLength: 50
+      provider:
+        description: The name of the provider who supplied the proof.
+        type: string
+        maxLength: 131
+      expiry_date:
+        description: The date on which the proof expires.
+        type: string
+        format: date
+  Waiver:
+    type: object
+    properties:
+      period:
+        type: object
+        description: The applicable date range.
+        $ref: '#/definitions/Period'
+  RelatedCase:
+    type: object
+    properties:
+      case_id:
+        description: The case ID.
+        type: string
+      reference:
+        description: The case reference.
+        type: string
+        maxLength: 40
+      type:
+        description: The type of the case. The value of this property must be an item from the CaseTypeCode code table. See /codetables/CaseTypeCode.
+        type: object
+        $ref: '#/definitions/Coding'
+  VerificationList:
+    type: object
+    properties:
+      data:
+        type: array
+        description: Details of a verification.
+        items:
+          $ref: '#/definitions/Verification'        
+                

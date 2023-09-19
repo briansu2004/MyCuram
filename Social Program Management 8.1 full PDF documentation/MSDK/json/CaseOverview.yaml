@@ -1,0 +1,226 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: Case Overview API
+  description: >
+    By using the Domain API that follows, you can retrieve an overview of a case
+    in Social Program Management. Agencies use case management to meet the needs
+    of clients and of clients' families in various ways until the goal of a
+    client's self-sufficiency is achieved. By using case management, caseworkers
+    can efficiently balance their work and quickly access important case
+    information. 
+host: 'localhost:9080'
+basePath: /Rest
+schemes:
+  - http
+produces:
+  - application/json
+consumes:
+  - application/json
+paths:
+  '/v1/api/core/case_overviews/{case_id}':
+    get:
+      summary: >-
+        Get an overview of a case based on the case ID.
+      description: >-
+        The Domain API returns the set of fields that are common across all case types for a case based on the <b><i>case_id</i></b>.
+      produces:
+        - application/json
+      tags:
+        - Get case overview by case ID
+      parameters:
+        - name: case_id
+          in: path
+          required: true
+          type: string
+          description: The unique identifier of the case.
+      responses:
+        '200':
+          description: The get request was successful.
+          schema:
+            $ref: '#/definitions/CaseOverview'
+        '400':
+          description: >-
+            The data request is invalid. Check the error message for further
+            information and resend the request with the corrected data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '500':
+          description: >-
+            An internal server error occurred. Contact your administrator for
+            more information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        default:
+          description: >-
+            An unexpected error occurred. Check the error message for further
+            information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+            
+  '/v1/api/core/case_overviews':
+    get:
+      summary: >-
+        Get case overviews by case reference.
+      description: |-
+        The Domain API retrieves the case that matches a <b><i>case_reference</i></b>, which is unique for each case. An empty list is returned if no case matches the <b><i>case_reference</i></b>. 
+      tags:
+        - Get case overview by case reference
+      parameters:
+        - name: case_reference
+          in: query
+          required: true
+          type: string
+          maxLength: 40
+      responses:
+        '200':
+          description: The get request was successful
+          schema:
+            $ref: '#/definitions/CaseOverviewList'
+        '400':
+          description: The data request is invalid. Check the error message for more information and resend the request with the corrected data.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        '500':
+          description: An internal server error occurred. Contact your administrator for more information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+        default:
+          description: An unexpected error occurred. Check the error message for more information.
+          schema:
+            $ref: '#/definitions/DefaultErrorModel'
+            
+definitions:
+  DefaultErrorModel:
+    type: object
+    properties:
+      Error:
+        type: array
+        items:
+          $ref: '#/definitions/Error'
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        description: >-
+          A machine-readable code that identifies the problem. The code does not
+          vary with the Accept-Language setting.
+      message:
+        type: string
+        description: >-
+          A human-readable message. The message text is translated based on the
+          Accept-Language setting of the request. The contents of the message
+          text can change over time.
+      message_id:
+        type: string
+        description: >-
+          The unique string identifier of the error message where there is an
+          error message for the underlying cause of the error. 
+      level:
+        type: string
+        description: The level of the error.
+    required:
+      - code
+      - message
+      - level
+  CaseOverview:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The unique ID of the case.
+        maxLength: 10
+      reference:
+        type: string
+        description: The unique reference that is associated with the case.
+        maxLength: 20
+      type:
+        type: object
+        description: >-
+          The type of the case. An application case and an integrated case are
+          examples of types of cases.
+        $ref: '#/definitions/Coding'
+      period:
+        type: object
+        description: The date range that is associated with the case.
+        $ref: '#/definitions/Period'
+      status:
+        type: object
+        description: >-
+          The status of the case. Open and closed are examples of the status of
+          a case.
+        $ref: '#/definitions/Coding'
+      owner:
+        type: object
+        description: The details of the owner of the case.
+        $ref: '#/definitions/CaseOwner'
+      members:
+        type: array
+        description: The list of persons who are members of the case.
+        items:
+          $ref: '#/definitions/CaseMember'
+  Coding:
+    type: object
+    properties:
+      system:
+        type: string
+        description: The identity of the terminology system.
+        maxLength: 200
+      code:
+        type: string
+        description: The symbol as defined by the system.
+        maxLength: 40
+      display:
+        type: string
+        description: The description of the code entry.
+        maxLength: 200
+  Period:
+    type: object
+    properties:
+      start_date:
+        type: string
+        format: date
+        description: The period start date.
+      end_date:
+        type: string
+        format: date
+        description: The period end date.
+  CaseOwner:
+    type: object
+    properties:
+      type:
+        type: object
+        description: >-
+          The type of owner. User, organizational unit, position, and work queue
+          are examples of the type of owner.
+        $ref: '#/definitions/Coding'
+      name:
+        type: string
+        description: The full name of the case owner.
+  CaseMember:
+    type: object
+    properties:
+      case_role_id:
+        description: The unique ID of the member that is associated with the case.
+        type: string
+      person_id:
+        description: The unique ID of the person.
+        type: string
+      primary:
+        description: A boolean to indicate whether the person is the primary case member.
+        type: boolean
+      period:
+        type: object
+        description: The applicable date range.
+        $ref: '#/definitions/Period'
+  CaseOverviewList:
+    type: object
+    properties:
+      data:
+        type: array
+        description: Case Overview details
+        items:
+          $ref: '#/definitions/CaseOverview' 
+                
