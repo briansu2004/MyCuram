@@ -21,16 +21,17 @@ Cúram Social Program Management Platform helps health and social program organi
 Determinations data stores the display rules data that the caseworker application then uses to present and explain eligibility outcomes to caseworkers. Determinations data is also used for eligibility and entitlement reports. Determinations data is stored in a compressed format in the Social Program Management database, which makes it difficult to extract for use in reports. However, the IBM Social Program Management Data Extractor makes it easier to retrieve the display rule attributes of a product
 rule set from the Determinations data.
 
+To use the IBM Social Program Management Data Extractor, customers must be familiar with Cúram Express Rules (CER), specifically with display rules and the role that the rules play in relation to determination data.
+
+Operators must be familiar with eligibility and entitlement rules. Operators must also be familiar with how to use Cúram Rules to develop eligibility and entitlement.
+
 ## IBM Universal Access Responsive Web Application 4.1.1 for IBM Cúram Social Program Management 8.0.1
 
 Responsive Web Application client uses modern technologies, such as React JavaScript, and the IBM Social Program Management Design System to enable citizens to better access services in a browser from desktop, tablet, and mobile devices.
 
 ### Lightweight development environment
 
-The lightweight development environment replaces the Social Program Management application with
-a Node.js hosted mock server. This accelerates set up and development, but can't fully replicate
-integration testing with the Social Program Management application. Use this environment to get
-started quickly.
+The lightweight development environment replaces the Social Program Management application with a Node.js hosted mock server. This accelerates set up and development, but can't fully replicate integration testing with the Social Program Management application. Use this environment to get started quickly.
 
 1. Install the IBM Universal Access Responsive Web Application React development environment.
 
