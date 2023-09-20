@@ -6,9 +6,66 @@ My Curam
 
 https://www.ibm.com/support/pages/ibm-c%C3%BAram-social-program-management-pdf-library
 
-- v 8.0.0
-- v 7.0.11
-- v 7.0.9
+- v8.0.3
+- v8.0.2, v8.0.1, v8.0.0
+- v7.0.11, v7.0.9
+
+## Tech
+
+- Java 8
+- Spring, Spring Boot, Spring Data, Spring JMX, Spring Batch
+- WebSphere / WebLogic
+- React
+- EJB / JSP / Servlet / Struts
+- DB2 / Oracle
+- XML
+- API, JSON
+
+## Tables
+
+- DETERMINATIONXML
+- DETERMINATIONS
+- DECISIONS
+- {RuleSet}\_{RuleClass} (example: STREAMLINEMEDICAIDDISPLAYRULESET_STREAMLINEMEDICAIDINCOMECATEGORY)
+- {RuleSet}_{RuleClass}\_LIST_{RuleAttribute} (example: STREAMLINEMEDICAIDDISPLAYRULESET_STREAMLINEMEDICAIDINCOMECATEGORY_LIST_ELIGI
+  BLEMEMBERSNAMES)
+- {AttributeValue} (aka AV)
+- {Case}
+- CASEDECISION
+- CASEHEADER
+- CREOLECASEDECISION
+- CREOLECASEDETERMINATION
+- CREOLECASEDETERMINATIONDATA
+- CREOLEPRODUCTDECISIONDISPCAT
+- CREOLEPRODUCTPERIOD
+- CREOLEPRODUCTPERIODDISPCAT
+- CREOLERULECLASSLINK
+- CREOLERULESET
+- PRODUCT
+- PRODUCTDELIVERY
+- BATCH_JOB_EXECUTION
+- BATCH_JOB_EXECUTION_CONTEXT
+- BATCH_JOB_EXECUTION_PARAMS
+- BATCH_JOB_INSTANCE
+- BATCH_STEP_EXECUTION
+- BATCH_STEP_EXECUTION_CONTEXT
+
+## Roles
+
+- case worker
+- ...
+
+## Cúram Express Rules (CER)
+
+In IBM SPM, the eligibility and entitlement engine uses Cúram Express Rules (CER) to apply rules to realworld data to determine eligibility and entitlement.
+
+The following list outlines the main characteristics of the eligibility and entitlement engine:
+
+- The starting point for case eligibility and entitlement is the product.
+- A product contains all the configuration details that specify the CER rules to use for the determination of eligibility and entitlement.
+- When a customer configures a product, the product's configuration can be used to calculate and store a determination result that is based on the input data. The determination result is used to generate financials and is retrieved when a caseworker views eligibility and entitlement details for the case.
+- Decision display rules are used to display information about decisions in the application. For example, the decision display rules can be used to display the key criteria that is used to determine the income assistance payable to a family in need.
+- The information to display comes from the display rules XML output or determination results. The results are stored in the Social Program Management database, in a BLOB type field called CREOLECASEDETERMINATIONDATA.CREOLESNAPSHOTDATA as a compressed, XML document.
 
 ## Curam Social Program Management Platform
 
