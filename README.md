@@ -49,6 +49,8 @@ https://www.ibm.com/support/pages/ibm-c%C3%BAram-social-program-management-pdf-l
 - BATCH_JOB_INSTANCE
 - BATCH_STEP_EXECUTION
 - BATCH_STEP_EXECUTION_CONTEXT
+- IntakeProcessName
+- IntakeProcessConfiguration
 
 ## Roles
 
@@ -119,3 +121,7 @@ In the full development environment, you install the Social Program Management J
 ## Curam Interview Questions
 
 [Curam Interview Questions](CuramInterviewQuestions.md)
+
+## Curam Glossary
+
+[Curam Glossary](CuramGlossary.md)
