@@ -69,6 +69,14 @@ The following list outlines the main characteristics of the eligibility and enti
 - Decision display rules are used to display information about decisions in the application. For example, the decision display rules can be used to display the key criteria that is used to determine the income assistance payable to a family in need.
 - The information to display comes from the display rules XML output or determination results. The results are stored in the Social Program Management database, in a BLOB type field called CREOLECASEDETERMINATIONDATA.CREOLESNAPSHOTDATA as a compressed, XML document.
 
+## Intelligent Evidence Gathering (IEG)
+
+IEG is an efficient alternative to traditional information gathering processes. With IEG, information is gathered interactively by displaying a script of questions that a user can provide answers to.
+
+Questions are only displayed if they are consistent with the user's previous answers so that the user is only required to provide answers relevant to his or her needs and situation. This creates a user-friendly environment that can be effectively implemented for a range of processes including client information intake, benefit assessment triage, online eligibility assessment, and so forth.
+
+The two main components of IEG are the Engine and the Player. IEG scripts are defined in XML and the Engine interprets the script definitions at runtime and evaluates the answers supplied by the user to determine the flow of execution. The Engine determines which pages should be displayed to the user and how many times they should be displayed. The Player presents the pages, questions and other controls to the user. IEG also builds on other elements of the Cúram Application Suite such as the Datastore (DS) and the Resource Store (RS).
+
 ## Curam Social Program Management Platform
 
 Cúram Social Program Management Platform is a business and technology solution that delivers prebuilt health and social program components, business processes, tool sets, and interfaces on top of a dynamically configurable architecture.
