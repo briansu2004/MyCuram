@@ -83,6 +83,30 @@ Cúram Social Program Management Platform is a business and technology solution 
 
 Cúram Social Program Management Platform helps health and social program organizations to provide optimal outcomes for citizens, satisfy increasing demand, and lower costs for organizations.
 
+## Cúram Child Welfare
+
+Cúram Child Welfare is a module within the Cúram platform that focuses on managing child welfare cases and services. It provides a comprehensive system for managing information related to child protection, foster care, adoption, family support services, and more. Key features may include:
+
+- **Case Management:** Tracking and managing information related to children, families, and cases involving child welfare services.
+
+- **Assessments:** Conducting assessments and evaluations to determine the needs and risks associated with children and families involved in the child welfare system.
+
+- **Workflow Automation:** Automating and streamlining processes related to case progression, approvals, and notifications to improve efficiency and compliance.
+
+- **Reporting and Analytics:** Generating reports and analytics to gain insights into caseloads, service outcomes, and performance indicators for decision-making and continuous improvement.
+
+## Provider Management
+
+Cúram Provider Management is another module within the Cúram platform that focuses on managing interactions with service providers involved in delivering social services. This can include various types of providers such as foster care agencies, adoption agencies, counseling services, etc. Key features may include:
+
+- **Provider Enrollment and Registration:** Managing the onboarding and registration of service providers in compliance with applicable regulations and standards.
+
+- **Contract and Agreement Management:** Handling contracts, agreements, and negotiations with providers, outlining the terms and conditions of service provision.
+
+- **Quality Assurance:** Monitoring and ensuring the quality and performance of service providers to meet established standards and objectives.
+
+- **Payment and Billing:** Facilitating the payment process for services provided by external service providers through the management of billing and invoicing.
+
 ## Curam Data Extractor
 
 Determinations data stores the display rules data that the caseworker application then uses to present and explain eligibility outcomes to caseworkers. Determinations data is also used for eligibility and entitlement reports. Determinations data is stored in a compressed format in the Social Program Management database, which makes it difficult to extract for use in reports. However, the IBM Social Program Management Data Extractor makes it easier to retrieve the display rule attributes of a product
