@@ -1,14 +1,31 @@
-# MyCuram
+# My Curam
 
-My Curam
+<!-- ## IBM Cúram Social Program Management PDF library
 
-## IBM Cúram Social Program Management PDF library
-
-https://www.ibm.com/support/pages/ibm-c%C3%BAram-social-program-management-pdf-library
+<https://www.ibm.com/support/pages/ibm-c%C3%BAram-social-program-management-pdf-library>
 
 - v8.0.3
 - v8.0.2, v8.0.1, v8.0.0
-- v7.0.11, v7.0.9
+- v7.0.11, v7.0.9 -->
+
+## My Curam Skills
+
+Customize the data model based on the requirements, configure the user interface, develop business rules, test changes and deploy; dump and migrate the data; integration with other systems; eligibility determination process; case management
+
+## My Curam Projects
+
+<!-- ### Project 1 -->
+
+<!-- For MCCSS / Ministry of Children, Community and Social Services-->
+
+Worked on an open-to-public online web application of children aid app and an agency license management app
+
+- Analyzed the old IBM Curam application, designed the new application with Angular, Material on the front-end, IBM WebSphere Application Server Liberty, Java Spring Boot on the backend, and planned the lift and shift strategy.
+- Program Angular components, services, interceptions, pipes, translations, forms, data tables, animations and ad-hoc UI/UX pages with JavaScript, RxJS, Material etc.
+- Developed backend RESTful API services with Java, Spring Boot, Lombok, JPA repository, Maven and Oracle etc. Utilized JUnit and Postman to run test suites.
+- Used JSON Web Token JWT to implement token authorization (access token for client credential flow and refresh token with auth code flow).
+- Migrated the IBM Curam Social Program Management data model to Oracle DB; Created the PL/SQL batch jobs for an initial load and some regular delta loads.
+- Managed code repository, pull requests, merges and pipelines with GitLab.
 
 ## Tech
 

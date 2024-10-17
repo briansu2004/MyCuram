@@ -1,5 +1,22 @@
 # Curam Interview Questions
 
+- [Questions](#questions)
+- [What is IBM Curam, and what is its primary purpose in social program management?](#what-is-ibm-curam-and-what-is-its-primary-purpose-in-social-program-management)
+- [Can you explain the core components of IBM Curam?](#can-you-explain-the-core-components-of-ibm-curam)
+- [How do you configure or customize IBM Curam for specific social programs or government agencies?](#how-do-you-configure-or-customize-ibm-curam-for-specific-social-programs-or-government-agencies)
+- [Describe the database schema used by IBM Curam. What are the key tables and their relationships?](#describe-the-database-schema-used-by-ibm-curam-what-are-the-key-tables-and-their-relationships)
+- [What are Curam Workflows, and how are they used in social program management?](#what-are-curam-workflows-and-how-are-they-used-in-social-program-management)
+- [How does Curam handle eligibility determination and rules-based decision-making?](#how-does-curam-handle-eligibility-determination-and-rules-based-decision-making)
+- [Can you discuss the integration options available for IBM Curam, such as APIs and web services?](#can-you-discuss-the-integration-options-available-for-ibm-curam-such-as-apis-and-web-services)
+- [What role does Curam Evidence Framework play in social program eligibility?](#what-role-does-curam-evidence-framework-play-in-social-program-eligibility)
+- [How can you troubleshoot common issues or errors in IBM Curam?](#how-can-you-troubleshoot-common-issues-or-errors-in-ibm-curam)
+- [How does IBM Curam assist in managing government social programs efficiently?](#how-does-ibm-curam-assist-in-managing-government-social-programs-efficiently)
+- [Share your experience on Curam implementation and the challenges you faced?](#share-your-experience-on-curam-implementation-and-the-challenges-you-faced)
+- [How do you ensure compliance with government regulations and policies when configuring IBM Curam for a specific program?](#how-do-you-ensure-compliance-with-government-regulations-and-policies-when-configuring-ibm-curam-for-a-specific-program)
+- [What strategies would you use to optimize the performance of an IBM Curam system for a large-scale social program?](#what-strategies-would-you-use-to-optimize-the-performance-of-an-ibm-curam-system-for-a-large-scale-social-program)
+- [How do you handle data security and privacy concerns when working with sensitive client information in IBM Curam?](#how-do-you-handle-data-security-and-privacy-concerns-when-working-with-sensitive-client-information-in-ibm-curam)
+- [What steps would you take to ensure the successful rollout and adoption of IBM Curam within a government agency or organization?](#what-steps-would-you-take-to-ensure-the-successful-rollout-and-adoption-of-ibm-curam-within-a-government-agency-or-organization)
+
 ## Questions
 
 IBM Curam is a software solution for social program management. If you're preparing for an interview related to IBM Curam or a position that involves working with IBM Curam, you may encounter a variety of technical and functional questions. Here are some common interview questions related to IBM Curam:
@@ -739,7 +756,7 @@ Optimizing the performance of an IBM Curam system for a large-scale social progr
 
 By applying these strategies, government agencies and organizations can ensure that their IBM Curam system performs optimally, even in large-scale social program environments, providing efficient service delivery to program participants and maintaining system responsiveness and reliability.
 
-## How do you handle data security and privacy concerns when working with sensitive client information in IBM Curam?,
+## How do you handle data security and privacy concerns when working with sensitive client information in IBM Curam?
 
 Handling data security and privacy concerns when working with sensitive client information in IBM Curam is of utmost importance to ensure compliance with regulations and safeguard individuals' personal data. Here are essential steps and considerations for maintaining data security and privacy in IBM Curam:
 
